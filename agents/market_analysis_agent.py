@@ -1,30 +1,11 @@
-"""
-Market Analysis Agent — deep-agent-style (multi-step, tool-calling, autonomous)
-
-NOTE ON DESIGN: this deliberately does NOT use the `deepagents` package.
-`deepagents` bundles several extra hidden tools (todo list, filesystem,
-subagent delegation) alongside any tool you give it. Groq's llama-3.3-70b
-is unreliable at native tool-calling once multiple tools are in the request —
-it intermittently emits a malformed "<function=name{...}>" string instead of
-a real tool call, which Groq's API then rejects with a 400 error. This is a
-known, widely-reported issue with Groq + multi-tool agent frameworks, not
-something fixable in this code.
-
-Instead, this file implements the same idea manually: the model decides on
-its own, turn by turn, whether to call search_web or answer — but only ONE
-tool is ever exposed, which keeps Groq's tool-calling reliable. If you later
-switch to an Anthropic or OpenAI model, you can swap this loop for
-`deepagents.create_deep_agent` with no other changes needed.
-"""
-
 import os
 import json
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage, ToolMessage
 
-from tools import search_web
-from schema import MarketAnalysis
+from tools.web_search_tool import search_web
+from state.market_analysis_schema import MarketAnalysis
 
 load_dotenv()
 
@@ -137,3 +118,4 @@ def run_market_analysis(startup_idea: str, industry: str, location: str) -> Mark
     parsed = json.loads(cleaned)
 
     return MarketAnalysis(**parsed)
+
