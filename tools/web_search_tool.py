@@ -1,6 +1,7 @@
 from ddgs import DDGS
+from langchain_core.tools import tool
 
-
+@tool
 def search_web(query: str, max_results: int = 5):
     """
     Search the web using DuckDuckGo.
