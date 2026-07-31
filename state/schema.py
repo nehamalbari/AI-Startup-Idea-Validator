@@ -1,6 +1,6 @@
+
 from pydantic import BaseModel, Field
 from typing import List
-
 
 class CustomerSegment(BaseModel):
     name: str
@@ -16,3 +16,12 @@ class MarketAnalysis(BaseModel):
     customer_segments: List[CustomerSegment]
     market_maturity: str = Field(description="Emerging | Growing | Mature | Declining")
     key_trends: List[str]
+
+    # -------------------- WEB SEARCH --------------------
+
+class WebSearchReport(BaseModel):
+    market_trends: List[str]
+    customer_pain_points: List[str]
+    latest_news: List[str]
+    industry_insights: List[str]
+
