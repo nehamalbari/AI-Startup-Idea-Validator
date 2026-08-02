@@ -25,3 +25,14 @@ class WebSearchReport(BaseModel):
     latest_news: List[str]
     industry_insights: List[str]
 
+class SWOTRiskReport(BaseModel):
+    strengths: List[str]
+    weaknesses: List[str]
+    opportunities: List[str]
+    threats: List[str]
+
+    market_risks: List[str]
+    technical_risks: List[str]
+    financial_risks: List[str]
+
+    recommendations: List[str]
