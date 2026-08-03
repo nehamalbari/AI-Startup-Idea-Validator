@@ -1,25 +1,26 @@
-from ddgs import DDGS
 from langchain_core.tools import tool
+from ddgs import DDGS
 
 
 @tool
-def search_web(query: str) -> str:
-    """
-    Search the web using DuckDuckGo.
-    Returns the search results as formatted text.
-    """
+def search_web(query: str, max_results: int = 3) -> str:
+    """Search the web for existing solutions, MVP patterns, and domain pain points."""
+    try:
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=max_results))
+            if not results:
+                return f"No search results found for: '{query}'."
 
-    with DDGS() as ddgs:
-        results = list(ddgs.text(query, max_results=5))
+            snippets = []
+            for r in results:
+                title = r.get("title", "No Title")
+                body = r.get("body", "No Snippet")
+                snippets.append(f"Title: {title}\nSnippet: {body}")
 
-    text = ""
+            return "\n\n".join(snippets)
 
-    for r in results:
-        text += f"""
-Title: {r.get("title")}
-Body: {r.get("body")}
-URL: {r.get("href")}
-
-"""
-
-    return text
+    except Exception as e:
+        return (
+            f"[Search Warning]: Web search encountered a temporary connection issue ({str(e)}). "
+            f"Proceeding with core reasoning for query: '{query}'."
+        )

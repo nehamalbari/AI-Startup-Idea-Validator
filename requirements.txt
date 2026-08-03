@@ -1,5 +1,7 @@
-langchain-core
-langchain-groq
-ddgs
-pydantic
 python-dotenv
+langchain-groq
+deepagents
+groq
+pydantic
+ddgs
+langchain-core
