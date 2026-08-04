@@ -1,13 +1,18 @@
 import os
+import json
 
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import (
+    SystemMessage,
+    HumanMessage,
+    ToolMessage,
+)
 
 from tools.web_search_tool import search_web
+from state.schema import SWOTRiskReport
 
 load_dotenv()
-
 
 # ---------------- API KEY ---------------- #
 
@@ -15,7 +20,6 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 if not GROQ_API_KEY:
     raise ValueError("GROQ_API_KEY missing")
-
 
 # ---------------- MODEL ---------------- #
 
@@ -25,104 +29,155 @@ model = ChatGroq(
     temperature=0.3
 )
 
+TOOLS = [search_web]
+
+TOOLS_BY_NAME = {
+    tool.name: tool
+    for tool in TOOLS
+}
+
+model_with_tools = model.bind_tools(TOOLS)
+
+MAX_STEPS = 5
 
 # ---------------- PROMPT ---------------- #
 
 SYSTEM_PROMPT = """
-You are an AI SWOT & Risk Analysis Agent.
+You are a Senior Business Strategy Consultant inside an AI Startup Validator.
 
-Analyze the startup idea using the provided web research.
+Your task is to analyze the startup idea using autonomous web search.
 
-Return the response in the following format.
+You may search multiple times if needed.
 
-Strengths
-- Point 1
-- Point 2
-- Point 3
+Read all search results carefully.
 
-Weaknesses
-- Point 1
-- Point 2
-- Point 3
+Do NOT copy webpage titles or URLs.
 
-Opportunities
-- Point 1
-- Point 2
-- Point 3
+Merge duplicate information into meaningful insights.
 
-Threats
-- Point 1
-- Point 2
-- Point 3
+Return ONLY valid JSON.
 
-Risk Analysis
-
-Market Risks
-- Point 1
-- Point 2
-
-Technical Risks
-- Point 1
-- Point 2
-
-Financial Risks
-- Point 1
-- Point 2
-
-Recommendations
-- Point 1
-- Point 2
-- Point 3
+{
+    "strengths":[
+        "...",
+        "...",
+        "..."
+    ],
+    "weaknesses":[
+        "...",
+        "...",
+        "..."
+    ],
+    "opportunities":[
+        "...",
+        "...",
+        "..."
+    ],
+    "threats":[
+        "...",
+        "...",
+        "..."
+    ],
+    "market_risks":[
+        "...",
+        "..."
+    ],
+    "technical_risks":[
+        "...",
+        "..."
+    ],
+    "financial_risks":[
+        "...",
+        "..."
+    ],
+    "recommendations":[
+        "...",
+        "...",
+        "..."
+    ]
+}
 
 Rules:
-- Keep response under 350 words.
-- Use short bullet points.
-- No paragraphs.
-- Be concise and professional.
-"""
 
+- Return ONLY valid JSON.
+- No markdown.
+- No explanations outside JSON.
+- No webpage titles.
+- No URLs.
+- Every point must be a complete business insight.
+- Each point should contain around 15–25 words.
+- Recommendations should be actionable.
+- Maximum 3 items per SWOT category.
+- Maximum 2 items per risk category.
+"""
 
 # ---------------- FUNCTION ---------------- #
 
-def swot_risk_agent(startup_idea):
-
-    search_query = f"""
-    SWOT analysis, strengths, weaknesses,
-    opportunities, threats,
-    competitors, market risks,
-    business risks for {startup_idea}
-    """
-
-    web_results = search_web.invoke(
-        {
-            "query": search_query
-        }
-    )
+def run_swot_analysis(startup_idea: str) -> SWOTRiskReport:
 
     messages = [
-
-        SystemMessage(
-            content=SYSTEM_PROMPT
-        ),
+        SystemMessage(content=SYSTEM_PROMPT),
 
         HumanMessage(
             content=f"""
-Startup Idea:
+Startup Idea
 
 {startup_idea}
 
-
-Web Research:
-
-{web_results}
-
-
-Generate SWOT and Risk Analysis.
+Perform SWOT analysis.
 """
         )
-
     ]
 
-    response = model.invoke(messages)
+    final_text = None
 
-    return response.content.strip()
+    for _ in range(MAX_STEPS):
+
+        ai_message = model_with_tools.invoke(messages)
+
+        messages.append(ai_message)
+
+        if not ai_message.tool_calls:
+            final_text = ai_message.content
+            break
+
+        for tool_call in ai_message.tool_calls:
+
+            tool = TOOLS_BY_NAME.get(tool_call["name"])
+
+            if tool is None:
+                result = "Unknown tool"
+
+            else:
+                result = tool.invoke(tool_call["args"])
+
+            cleaned_result = " ".join(str(result).replace("\n", " ").split())
+
+            messages.append(
+                ToolMessage(
+                    content=cleaned_result,
+                    tool_call_id=tool_call["id"]
+                )
+            )
+
+    else:
+
+        messages.append(
+            HumanMessage(
+                content="Stop searching and return ONLY JSON."
+            )
+        )
+
+        final_text = model.invoke(messages).content
+
+    cleaned = final_text.strip()
+
+    if cleaned.startswith("```"):
+        cleaned = cleaned.replace("```json", "")
+        cleaned = cleaned.replace("```", "")
+
+    cleaned = cleaned.strip()
+
+    parsed = json.loads(cleaned)
+
+    return SWOTRiskReport(**parsed)
