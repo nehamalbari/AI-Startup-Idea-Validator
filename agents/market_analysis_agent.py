@@ -1,157 +1,53 @@
-
-"""
-Market Analysis Agent
-
-Flow:
-1. Receive startup details
-2. Use web search tool to collect information
-3. Send search results to Groq
-4. Generate market analysis JSON
-"""
-
-
-import os
-import json
-
-from dotenv import load_dotenv
-from langchain_groq import ChatGroq
-from langchain_core.messages import SystemMessage, HumanMessage
-
+from deepagents import create_deep_agent
+from app.config import llm
 from tools.web_search_tool import search_web
-from state.schema import MarketAnalysis
+from state.schema import MarketAnalysisResult
+import os
 
+BASE_DIR = os.path.dirname(
+    os.path.dirname(os.path.abspath(__file__))
+)
 
-load_dotenv()
+prompt_path = os.path.join(
+    BASE_DIR,
+    "prompts",
+    "market_analysis_agent.md"
+)
 
+with open(prompt_path, "r", encoding="utf-8") as file:
+    market_analysis_prompt = file.read()
 
-# ---------------- API KEY ---------------- #
-
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-
-if not GROQ_API_KEY:
-    raise ValueError("GROQ_API_KEY missing")
-
-
-# ---------------- MODEL ---------------- #
-
-model = ChatGroq(
-    model="llama-3.3-70b-versatile",
-    groq_api_key=GROQ_API_KEY,
-    temperature=0.3
+market_analysis_agent = create_deep_agent(
+    model=llm,
+    system_prompt=market_analysis_prompt,
+    tools=[search_web],
+    response_format=MarketAnalysisResult
 )
 
 
-# ---------------- PROMPT ---------------- #
-
-SYSTEM_PROMPT = """
-You are a Market Analysis Agent.
-
-Analyze startup opportunities using the provided web research.
-
-Return ONLY valid JSON.
-
-Format:
-
-{
- "location":"string",
- "tam":"string",
- "sam":"string",
- "som":"string",
- "growth_rate":"string",
- "customer_segments":[
-   {
-    "name":"string",
-    "description":"string"
-   }
- ],
- "market_maturity":"Emerging | Growing | Mature | Declining",
- "key_trends":[
-   "string"
- ]
-}
-
-
-Rules:
-
-- TAM > SAM > SOM
-- Use the provided research.
-- Focus on target location.
-- Avoid unrealistic numbers.
-"""
-
-
-# ---------------- FUNCTION ---------------- #
-
-def run_market_analysis(
-        startup_idea: str,
-        industry: str,
-        location: str
-):
-
-    # Step 1: Web Search
-
-    search_query = f"""
-    Market size, growth trends, customers,
-    competitors for {startup_idea}
-    in {location} {industry} industry
+def run_market_analysis(idea: str, industry: str, location: str) -> MarketAnalysisResult:
     """
+    Run the market analysis agent for a given startup idea, industry,
+    and target location. Returns a structured MarketAnalysisResult.
+    """
+    user_message = f"""
+Startup Idea: {idea}
+Industry: {industry}
+Target Location: {location}
 
-    web_results = search_web.invoke(
-    {
-        "query": search_query
-    }
-)
-
-
-    # Step 2: Send research to LLM
-
-    messages = [
-
-        SystemMessage(
-            content=SYSTEM_PROMPT
-        ),
-
-        HumanMessage(
-            content=f"""
-Startup Idea:
-{startup_idea}
-
-Industry:
-{industry}
-
-Location:
-{location}
-
-
-Web Research:
-
-{web_results}
-
-
-Generate market analysis JSON.
+Research this market using web search, then provide a complete market
+analysis covering TAM, SAM, SOM, growth rate, market maturity, key
+customer segments, and key trends.
 """
-        )
-    ]
 
+    result = market_analysis_agent.invoke({
+        "messages": [
+            {"role": "user", "content": user_message}
+        ]
+    })
 
-    response = model.invoke(messages)
+    structured = result.get("structured_response")
+    if structured is None:
+        raise ValueError(f"Agent did not return a structured response. Raw result: {result}")
 
-
-    output = response.content.strip()
-
-
-    # Remove markdown
-
-    if output.startswith("```"):
-
-        output = output.replace("```json", "")
-        output = output.replace("```", "")
-
-    output = output.strip()
-
-
-    data = json.loads(output)
-
-
-    return MarketAnalysis(**data)
-
+    return structured
