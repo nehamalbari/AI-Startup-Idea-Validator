@@ -6,20 +6,27 @@ from langchain_core.tools import tool
 def search_web(query: str) -> str:
     """
     Search the web using DuckDuckGo.
-    Returns the search results as formatted text.
+    Returns the top search results as formatted text.
     """
 
-    with DDGS() as ddgs:
-        results = list(ddgs.text(query, max_results=5))
+    try:
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=5))
 
-    text = ""
+        if not results:
+            return "No search results found."
 
-    for r in results:
-        text += f"""
-Title: {r.get("title")}
-Body: {r.get("body")}
-URL: {r.get("href")}
+        text = ""
+
+        for r in results:
+            text += f"""
+Title: {r.get("title", "N/A")}
+Body: {r.get("body", "N/A")}
+URL: {r.get("href", "N/A")}
 
 """
 
-    return text
+        return text
+
+    except Exception as e:
+        return f"Search failed: {str(e)}"

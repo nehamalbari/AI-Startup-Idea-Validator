@@ -1,7 +1,16 @@
 from agents.web_search_agent import run_web_search
 
-idea = input("Enter Startup Idea: ")
 
-report = run_web_search(idea)
+def main():
 
-print(report.model_dump_json(indent=4))
+    startup_idea = input("Enter Startup Idea: ")
+
+    print("\nSearching...\n")
+
+    report = run_web_search(startup_idea)
+
+    print(report)
+
+
+if __name__ == "__main__":
+    main()
