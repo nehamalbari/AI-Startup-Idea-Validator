@@ -10,6 +10,8 @@ Traditional startup validation methods require manual research, competitor analy
 
 The goal of this project is to build an AI-powered Startup Idea Validator that automatically analyzes a startup idea using multiple AI agents. The system performs market research, competitor analysis, risk assessment, MVP recommendations, and generates a detailed startup validation report.
 
+---
+
 # 2. Proposed Solution
 
 The proposed system is an AI multi-agent platform that validates startup ideas through specialized AI agents.
@@ -46,6 +48,7 @@ The user provides a startup idea along with relevant details. The system process
 
    * Combines all analysis results and generates a final startup validation report.
 
+---
 
 # 3. System Architecture
 
@@ -119,9 +122,9 @@ Final outputs are passed to:
         |
         |
  Final Validation Report
+```
 
-
-
+---
 
 # 4. Technology Stack
 
@@ -150,7 +153,7 @@ Purpose:
 * Connects frontend with AI agents.
 * Manages application logic.
 
-
+---
 
 ## AI and Agent Frameworks
 
@@ -164,7 +167,7 @@ Advantages:
 * Supports tool integration.
 * Provides structured agent workflows.
 
-
+---
 
 ## Large Language Models
 
@@ -175,6 +178,7 @@ Examples:
 * Gemini API
 * Grok API
 
+---
 
 ## Tools
 
@@ -187,7 +191,7 @@ Other tools:
 * PDF generation tools
 * Data processing utilities
 
-
+---
 
 ## Database
 
@@ -200,7 +204,7 @@ Purpose:
 * Store user requests.
 * Maintain reports and historical analysis.
 
-
+---
 
 # 5. Framework Comparison
 
@@ -219,7 +223,7 @@ Limitations:
 * Complex workflows require additional orchestration.
 * Agent behavior needs more manual control.
 
-
+---
 
 ## LangGraph
 
@@ -237,7 +241,7 @@ Limitations:
 * Requires designing graph structures.
 * More complex for simple sequential workflows.
 
-
+---
 
 ## Deep Agents
 
@@ -254,7 +258,7 @@ Limitations:
 
 * Smaller ecosystem compared to LangChain.
 
-
+---
 
 ## Framework Selection
 
@@ -262,7 +266,7 @@ For this project, Deep Agents is selected because the workflow consists of multi
 
 Since each agent receives the previous agent's output directly, complex graph-based state management is not required.
 
-
+---
 
 # 6. Sequential Execution Flow
 
@@ -270,7 +274,7 @@ The system follows a sequential agent execution pipeline.
 
 Flow:
 
-
+```
 User Input
     |
     |
@@ -296,7 +300,7 @@ Report Generation Agent
     |
     |
 Final Report
-
+```
 
 Each agent:
 
@@ -308,7 +312,7 @@ Each agent:
 
 The system avoids shared memory between agents and follows direct output passing for better reliability and easier debugging.
 
-
+---
 
 # 7. Deployment Details
 
@@ -318,7 +322,7 @@ The system avoids shared memory between agents and follows direct output passing
 * Virtual environment management
 * Git and GitHub for version control
 
-
+---
 
 ## Backend Deployment
 
@@ -328,7 +332,7 @@ The backend can be deployed using:
 * Docker containers
 * Serverless deployment platforms
 
-
+---
 
 ## Frontend Deployment
 
@@ -338,7 +342,7 @@ Frontend can be hosted using:
 * Netlify
 * Cloud hosting services
 
-
+---
 
 ## Environment Management
 
@@ -349,12 +353,14 @@ API keys and sensitive information are stored using:
 
 Example:
 
-
+```
 GOOGLE_API_KEY
 GROK_API_KEY
+```
 
+These keys are not committed to GitHub.
 
-
+---
 
 # 8. Future Enhancements
 
@@ -388,7 +394,7 @@ Possible future improvements:
 
    * Provide startup validation through Android/iOS applications.
 
-
+---
 
 # 9. Conclusion
 
