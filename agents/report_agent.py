@@ -2,12 +2,15 @@ import json
 
 from deepagents import create_deep_agent
 
+from app.config import llm
+
 
 with open("prompts/report_agent.md", "r") as file:
     system_prompt = file.read()
 
 
 report_agent = create_deep_agent(
+    model = llm,
     system_prompt=system_prompt
 )
 
@@ -45,6 +48,13 @@ def run_report_agent(
 
 
     content = response["messages"][-1].content
+
+
+    if isinstance(content, list):
+        content = content[0]["text"]
+
+
+    content = content.strip()
 
 
     if content.startswith("```json"):
