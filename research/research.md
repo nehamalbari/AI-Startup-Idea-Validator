@@ -121,7 +121,7 @@ Other tools:
 
 Possible database usage:
 
-* MySQL / PostgreSQL
+* MySQL 
 
 Purpose:
 
