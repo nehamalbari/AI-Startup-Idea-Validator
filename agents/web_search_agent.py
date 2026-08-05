@@ -3,13 +3,14 @@ import json
 from deepagents import create_deep_agent
 
 from tools.web_search import search_web
-
+from app.config import llm
 
 with open("prompts/web_search_agent.md", "r") as file:
     system_prompt = file.read()
 
 
 web_search_agent = create_deep_agent(
+    model = llm,
     tools=[search_web],
     system_prompt=system_prompt,
 )
