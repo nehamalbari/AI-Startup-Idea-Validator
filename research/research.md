@@ -405,3 +405,63 @@ By combining web search, market research, competitor analysis, risk assessment, 
 The multi-agent architecture improves scalability by dividing responsibilities among specialized agents. Using Deep Agents enables efficient agent development with tool integration and sequential execution.
 
 This project demonstrates how AI agents can assist entrepreneurs in making informed decisions before investing resources into a startup idea.
+
+---
+
+# Doubt Clearance
+
+* AI Startup Idea Validation Reseach Report
+
+1.	Evolution of Deep Agents:
+* 	Traditional LLMs (like early ChatGPT) : Traditional LLMs (Large Language Models) such as ChatGPT, Gemini, Claude, and Llama are trained on large amounts of data to understand and generate human language. They can answer questions and generate text, but they cannot access external tools or perform actions independently.
+
+*	LLM with tools : An LLM with tools is a language model that can interact with external systems such as web search engines, databases, calculators, and file systems. This allows the model to perform tasks beyond simple text generation.
+
+
+*	Autonomous Agents : Autonomous agents are AI systems that can reason, plan, make decisions, and use tools without requiring constant human guidance. They can independently execute multiple steps to complete a task.
+
+*	Deep Agents : Deep Agents are advanced AI agents that combine reasoning, planning, tool usage, memory management, and task execution. They can solve complex problems by coordinating multiple actions and interacting with external resources.
+
+2.	Why deep agents are used?
+Suppose a user enters the following request:
+
+Analyze my startup idea.
+
+A normal LLM will simply generate a text response.
+
+A Deep Agent will:
+
+Search the web.
+Analyze competitors.
+Identify risks.
+Generate a report.
+Save the results.
+
+
+
+
+3 What is an MCP?
+MCP = A common language between an AI agent and external tools.
+In our AI startup validator, MCP can be used as a standardized tool layer. The competitor agent can access web search through a Tavily MCP server, the report agent can access stored analysis through a database MCP server, and PDF generation can be exposed as another MCP tool. This keeps agents independent from specific APIs.
+
+
+
+LangGraph : Mainly used to manage multiple agents (Orchestration)
+LangChain : Mainly used to build individual AI agents
+
+Context : 
+Context is the information given to the AI model at the time it generates a response.
+The LLM does not automatically know everything. We provide context along with the current request.
+
+Memory : 
+Memory is the mechanism used to store information so it can be reused later.
+Memory helps an agent remember things beyond the current step.
+*	Short term memory
+*	Long term memory
+Thread : 
+A thread is an identifier for one continuous conversation or task execution.
+It helps the system know:
+"Which user's conversation or workflow state should I load?"
+
+
+
