@@ -113,22 +113,11 @@ Web Search Tool:
 Other tools:
 
 * PDF generation tools
-* Data processing utilities
+
 
 ---
 
-## Database
 
-Possible database usage:
-
-* MySQL 
-
-Purpose:
-
-* Store user requests.
-* Maintain reports and historical analysis.
-
----
 
 # 5. Framework Comparison
 
@@ -253,8 +242,7 @@ The system avoids shared memory between agents and follows direct output passing
 The backend can be deployed using:
 
 * Cloud platforms
-* Docker containers
-* Serverless deployment platforms
+
 
 ---
 
