@@ -55,30 +55,6 @@ The user provides a startup idea along with relevant details. The system process
 ## High Level Design (HLD)
 
 The High-Level Design represents the overall flow of the application.
-
-```
-                User
-                 |
-                 |
-        Startup Idea Submission
-                 |
-                 |
-          Orchestrator
-                 |
- ------------------------------------------------
- |              |              |                 |
-Web Search   Market       Competitor       SWOT/Risk
- Agent       Agent          Agent            Agent
- |              |              |                 |
- ------------------------------------------------
-                 |
-          MVP Recommendation
-                 |
-          Go-To-Market Agent
-                 |
-          Report Generation Agent
-                 |
-             PDF Report
 ```
 
 ---
@@ -87,41 +63,6 @@ Web Search   Market       Competitor       SWOT/Risk
 
 The Low-Level Design explains the internal components and communication between modules.
 
-```
-Frontend
-   |
-   |
-Backend API
-   |
-   |
-Orchestrator
-   |
-   |
-Sequential Agent Pipeline
-   |
-   |
-------------------------------------------------
-|             |              |                 |
-Agent 1      Agent 2        Agent 3           Agent 4
-
-Web          Market         Competitor        SWOT
-Search       Analysis       Analysis          Analysis
-
-------------------------------------------------
-
-Each agent:
-- Receives previous agent output
-- Uses required tools
-- Processes information using LLM
-- Returns structured JSON output
-
-Final outputs are passed to:
-        |
-        |
- Report Generator
-        |
-        |
- Final Validation Report
 ```
 
 ---
