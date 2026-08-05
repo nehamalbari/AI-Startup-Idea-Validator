@@ -1,12 +1,44 @@
-from agents.web_search_agent import run_web_search_agent
+from agents.report_agent import run_report_agent
 
 
-startup_idea = """
-AI-powered fitness assistant that generates
-personalized workout plans and diet recommendations.
-"""
+market_output = {
+    "market_size": "Growing AI fitness market",
+    "trends": ["AI personalization", "Wearables"]
+}
+
+competitor_output = {
+    "competitors": ["Fitbod", "Freeletics"]
+}
+
+swot_output = {
+    "strengths": ["AI customization"],
+    "weaknesses": ["New product"],
+    "opportunities": ["College fitness market"],
+    "threats": ["Existing apps"]
+}
+
+mvp_output = {
+    "features": [
+        "AI workout planner",
+        "Diet recommendation"
+    ]
+}
+
+gtm_output = {
+    "strategy": [
+        "Target college students",
+        "Campus marketing"
+    ]
+}
 
 
-result = run_web_search_agent(startup_idea)
+result = run_report_agent(
+    market_output,
+    competitor_output,
+    swot_output,
+    mvp_output,
+    gtm_output
+)
+
 
 print(result)
