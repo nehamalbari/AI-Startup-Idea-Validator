@@ -1,25 +1,46 @@
-from agents.competitor_agent import competitor_agent
+from pdf_generator.generate_pdf import generate_pdf
 
 
-startup_idea = {
-    "messages": [
-        {
-            "role": "user",
-            "content": """
-Startup Idea:
-AI platform that helps students prepare for technical interviews.
+sample_report = {
 
-Target Users:
-College students and fresh graduates.
+    "startup_overview": {
 
-Industry:
-EdTech
-"""
-        }
-    ]
+        "idea_summary": "AI powered fitness assistant",
+
+        "problem_statement":
+        "Users struggle with personalized workout planning"
+
+    },
+
+
+    "swot_summary": {
+
+        "strengths": [
+            "AI recommendations",
+            "Personalization"
+        ],
+
+        "weaknesses": [
+            "Needs user data"
+        ],
+
+        "opportunities": [
+            "Growing health technology market"
+        ],
+
+        "threats": [
+            "Competition from fitness apps"
+        ]
+
+    }
+
 }
 
 
-response = competitor_agent.invoke(startup_idea)
+pdf = generate_pdf(sample_report)
 
-print(response["messages"][-1].content[0]["text"])
+
+print(
+    "Generated:",
+    pdf
+)
