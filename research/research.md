@@ -50,24 +50,7 @@ The user provides a startup idea along with relevant details. The system process
 
 ---
 
-# 3. System Architecture
-
-## High Level Design (HLD)
-
-The High-Level Design represents the overall flow of the application.
-```
-
----
-
-## Low Level Design (LLD)
-
-The Low-Level Design explains the internal components and communication between modules.
-
-```
-
----
-
-# 4. Technology Stack
+# 3. Technology Stack
 
 ## Frontend
 
