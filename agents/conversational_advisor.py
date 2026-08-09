@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -12,6 +13,7 @@ load_dotenv()
 
 
 # Separate LLM configuration ONLY for Conversational Advisor
+
 llm = ChatGoogleGenerativeAI(
     model="gemini-3.1-flash-lite",
     temperature=0,
@@ -19,22 +21,15 @@ llm = ChatGoogleGenerativeAI(
 )
 
 
-SYSTEM_PROMPT = """
-You are the Conversational Advisor for an AI Startup Idea Validator.
+# Load system prompt from prompts/conversational_adviser.md
 
-Your role is to maintain a continuous conversation with the user
-about their startup idea.
+PROMPT_PATH = (
+    Path(__file__).resolve().parent.parent
+    / "prompts"
+    / "conversational_adviser.md"
+)
 
-You should:
-
-1. Remember important information from previous messages.
-2. Use conversation history when answering follow-up questions.
-3. Maintain continuity throughout the conversation.
-4. Avoid asking the user to repeat information that is already available.
-5. Give clear, practical and concise answers.
-6. Use the latest information if the user changes their startup idea.
-7. Help the user understand and validate their startup idea.
-"""
+SYSTEM_PROMPT = PROMPT_PATH.read_text(encoding="utf-8")
 
 
 backend = StateBackend()
@@ -43,6 +38,7 @@ summarization_middleware = SummarizationMiddleware(
     model=llm,
     backend=backend,
 )
+
 
 conversational_advisor = create_deep_agent(
     model=llm,
