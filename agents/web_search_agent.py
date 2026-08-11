@@ -13,7 +13,7 @@ with open("prompts/web_search_agent.md", "r") as file:
 web_search_agent = create_deep_agent(
     model=llm,
     tools=[search_web],
-    system_prompt=system_prompt,
+    system_prompt=system_prompt
 )
 
 

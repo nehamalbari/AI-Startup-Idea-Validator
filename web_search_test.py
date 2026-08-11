@@ -1,12 +1,11 @@
-from pipeline.graph import run_pipeline
+from agents.web_search_agent import run_web_search_agent
 
 
 startup_idea = """
-AI fitness application for college students
-with personalized workout and diet recommendations.
+Momo business
 """
 
 
-result = run_pipeline(startup_idea)
+result = run_web_search_agent(startup_idea)
 
 print(result)

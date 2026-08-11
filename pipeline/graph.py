@@ -14,44 +14,30 @@ def run_pipeline(startup_idea):
         startup_idea
     )
 
-
     # Step 2: Market Analysis
     market_output = run_market_agent(
-        startup_idea,
         web_output
     )
-
 
     # Step 3: Competitor Analysis
     competitor_output = run_competitor_agent(
-        startup_idea,
-        web_output
-    )
-
-
-    # Step 4: SWOT Analysis
-    swot_output = run_swot_agent(
-        market_output,
-        competitor_output
-    )
-
-
-    # Step 5: MVP Recommendation
-    mvp_output = run_mvp_agent(
-        startup_idea,
-        swot_output,
         market_output
     )
 
+    # Step 4: SWOT Analysis
+    swot_output = run_swot_agent(
+        competitor_output
+    )
+
+    # Step 5: MVP Recommendation
+    mvp_output = run_mvp_agent(
+        swot_output
+    )
 
     # Step 6: Go-To-Market Strategy
     gtm_output = run_gtm_agent(
-        startup_idea,
-        market_output,
-        competitor_output,
         mvp_output
     )
-
 
     # Step 7: Final Report
     report_output = run_report_agent(
@@ -61,6 +47,5 @@ def run_pipeline(startup_idea):
         mvp_output,
         gtm_output
     )
-
 
     return report_output
