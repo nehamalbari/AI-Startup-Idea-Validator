@@ -5,6 +5,7 @@ from agents.swot_risk_agent import run_swot_agent
 from agents.mvp_recommendation_agent import run_mvp_agent
 from agents.gtm_strategy_agent import run_gtm_agent
 from agents.report_agent import run_report_agent
+from agents.pdf_generation_agent import run_pdf_generation_agent
 
 
 def run_pipeline(startup_idea):
@@ -48,4 +49,12 @@ def run_pipeline(startup_idea):
         gtm_output
     )
 
-    return report_output
+    # Step 8: PDF Generation
+    pdf_output = run_pdf_generation_agent(
+        report_output
+    )
+
+    return {
+        "report": report_output,
+        "pdf": pdf_output
+    }
