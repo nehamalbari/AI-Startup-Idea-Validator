@@ -33,6 +33,8 @@ def run_pdf_generation_agent(report_data):
         }
     )
 
+   
+
     content = response["messages"][-1].content
 
     if isinstance(content, list):

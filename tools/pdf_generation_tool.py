@@ -18,4 +18,7 @@ def pdf_generation_tool(report_data: dict) -> str:
 
     output_path = generate_pdf(report_data)
 
+    #new testing line
+    print("\nPDF CREATED AT:", output_path)
+
     return output_path
