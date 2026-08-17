@@ -90,7 +90,6 @@ def create_gemini_model(api_key):
 
     return ChatGoogleGenerativeAI(
         model="gemini-3.6-flash",
-        temperature=0,
         google_api_key=api_key
     )
 
@@ -129,7 +128,6 @@ print(
 
 llm = GeminiFallbackLLM(
     model="gemini-3.6-flash",
-    temperature=0,
     google_api_key=api_keys[0]
 )
 
