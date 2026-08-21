@@ -1,8 +1,4 @@
-import os
 from pathlib import Path
-
-import psycopg
-from dotenv import load_dotenv
 
 from deepagents import create_deep_agent
 from deepagents.backends import StateBackend
@@ -10,18 +6,7 @@ from deepagents.middleware import SummarizationMiddleware
 from langgraph.checkpoint.memory import InMemorySaver
 
 from app.config import llm
-
-
-# --------------------------------------------------
-# Load environment variables
-# --------------------------------------------------
-
-load_dotenv()
-
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL not found in .env")
+from tools.postgres_memory import get_messages, save_message
 
 
 # --------------------------------------------------
@@ -77,56 +62,6 @@ conversational_advisor = create_deep_agent(
 
 
 # --------------------------------------------------
-# PostgreSQL: Get conversation history
-# --------------------------------------------------
-
-def get_history(thread_id):
-    """Get previous conversation messages from PostgreSQL."""
-
-    with psycopg.connect(DATABASE_URL) as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
-                SELECT role, content
-                FROM conversation_messages
-                WHERE thread_id = %s
-                ORDER BY created_at ASC, id ASC
-                """,
-                (thread_id,),
-            )
-
-            rows = cur.fetchall()
-
-    return [
-        {
-            "role": role,
-            "content": content,
-        }
-        for role, content in rows
-    ]
-
-
-# --------------------------------------------------
-# PostgreSQL: Save conversation message
-# --------------------------------------------------
-
-def save_message(thread_id, role, content):
-    """Save one conversation message to PostgreSQL."""
-
-    with psycopg.connect(DATABASE_URL) as conn:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
-                INSERT INTO conversation_messages
-                    (thread_id, role, content)
-                VALUES
-                    (%s, %s, %s)
-                """,
-                (thread_id, role, content),
-            )
-
-
-# --------------------------------------------------
 # Run Conversational Advisor
 # --------------------------------------------------
 
@@ -135,13 +70,20 @@ def run_conversational_advisor(message, thread_id="default"):
     Run the Conversational Advisor.
 
     PostgreSQL stores the conversation history so that
-    history can be restored even after the application restarts.
+    history can be restored even after the application
+    restarts.
     """
 
+    # --------------------------------------------------
     # Get previous conversation history
-    history = get_history(thread_id)
+    # --------------------------------------------------
 
-    # Add current user message
+    history = get_messages(thread_id)
+
+    # --------------------------------------------------
+    # Add current user message for the agent
+    # --------------------------------------------------
+
     messages = history + [
         {
             "role": "user",
@@ -149,7 +91,20 @@ def run_conversational_advisor(message, thread_id="default"):
         }
     ]
 
+    # --------------------------------------------------
+    # Save user message to PostgreSQL
+    # --------------------------------------------------
+
+    save_message(
+        thread_id,
+        "user",
+        message,
+    )
+
+    # --------------------------------------------------
     # Run the agent
+    # --------------------------------------------------
+
     response = conversational_advisor.invoke(
         {
             "messages": messages,
@@ -161,19 +116,18 @@ def run_conversational_advisor(message, thread_id="default"):
         },
     )
 
-    # Save user message
-    save_message(
-        thread_id,
-        "user",
-        message,
-    )
-
+    # --------------------------------------------------
     # Get latest assistant response
+    # --------------------------------------------------
+
     assistant_message = response["messages"][-1]
 
     content = assistant_message.content
 
+    # --------------------------------------------------
     # Handle structured Gemini response
+    # --------------------------------------------------
+
     if isinstance(content, list):
         content = "".join(
             item.get("text", "")
@@ -181,7 +135,10 @@ def run_conversational_advisor(message, thread_id="default"):
             if isinstance(item, dict)
         )
 
-    # Save assistant response
+    # --------------------------------------------------
+    # Save assistant response to PostgreSQL
+    # --------------------------------------------------
+
     save_message(
         thread_id,
         "assistant",
