@@ -828,31 +828,36 @@ def render_input() -> None:
         unsafe_allow_html=True,
     )
 
-    # Card wrapper
+    # ─────────────────────────────────────────────────────────────────────────
+    # STARTUP IDEA INPUT CARD
+    # ─────────────────────────────────────────────────────────────────────────
+
     _l, _c, _r = st.columns([0.5, 5, 0.5])
+
     with _c:
-        st.markdown(
-            '<div style="background:white;border-radius:24px;padding:36px 40px;'
-            'box-shadow:0 8px 32px rgba(0,0,0,0.08);'
-            'border:1px solid rgba(244,185,66,0.15);">',
-            unsafe_allow_html=True,
-        )
 
-        startup_val = st.text_area(
-            "💡 Your Startup Idea",
-            placeholder="Describe your startup idea in a few sentences...",
-            height=160,
-            value=st.session_state.startup,
-            key="input_startup",
-        )
+        # Use a real Streamlit container instead of an HTML div
+        with st.container(border=True):
 
-        st.markdown("<div style='height:6px'></div>", unsafe_allow_html=True)
-        clicked = st.button(
-            "🍯  Start Validation",
-            key="start_validation",
-            use_container_width=True,
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
+            startup_val = st.text_area(
+                "💡 Your Startup Idea",
+                placeholder="Describe your startup idea in a few sentences...",
+                height=160,
+                value=st.session_state.startup,
+                key="input_startup",
+                label_visibility="visible",
+            )
+
+            st.markdown(
+                "<div style='height:8px'></div>",
+                unsafe_allow_html=True,
+            )
+
+            clicked = st.button(
+                "🍯  Start Validation",
+                key="start_validation",
+                use_container_width=True,
+            )
 
     if clicked:
         _err = None
