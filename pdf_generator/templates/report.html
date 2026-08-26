@@ -9,144 +9,454 @@
 
 <style>
 
+/* =====================================================
+   PDF PAGE SETTINGS
+===================================================== */
+
 @page {
     size: A4;
-    margin: 18mm;
+    margin: 16mm 15mm 18mm 15mm;
+}
+
+
+/* =====================================================
+   BASE STYLES
+===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    background: #f4f6f8;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: #f4f6f9;
-    color: #2d3748;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    background: #f4f6f8;
+    color: #243044;
     margin: 0;
-    line-height: 1.6;
+    padding: 0;
+    line-height: 1.65;
+    font-size: 14px;
 }
+
+
+/* =====================================================
+   COVER PAGE
+===================================================== */
 
 .cover {
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #182b49 0%, #2f4f7f 55%, #536f9d 100%);
     color: white;
-    padding: 70px 40px;
-    border-radius: 20px;
+    padding: 78px 48px;
+    border-radius: 18px;
     text-align: center;
-    margin-bottom: 30px;
-}
+    margin-bottom: 28px;
+    box-shadow: 0 12px 35px rgba(24, 43, 73, 0.18);
 
-.cover h1 {
-    font-size: 42px;
-    margin-bottom: 15px;
-}
-
-.cover p {
-    font-size: 18px;
-    opacity: 0.95;
-}
-
-.section {
-    background: white;
-    padding: 28px;
-    margin-top: 25px;
-    border-radius: 15px;
+    break-inside: avoid;
     page-break-inside: avoid;
 }
 
+.cover h1 {
+    font-size: 40px;
+    line-height: 1.2;
+    margin: 0 0 18px 0;
+    font-weight: 700;
+    letter-spacing: -0.7px;
+}
+
+.cover p {
+    font-size: 16px;
+    margin: 7px 0;
+    opacity: 0.9;
+    letter-spacing: 0.2px;
+}
+
+
+/* =====================================================
+   MAIN SECTIONS
+===================================================== */
+
+.section {
+    background: #ffffff;
+    padding: 30px 32px;
+    margin-top: 24px;
+    border-radius: 14px;
+    border: 1px solid #e7ebf0;
+    box-shadow: 0 5px 18px rgba(31, 45, 61, 0.05);
+
+    /*
+      Important:
+      We do NOT force the entire section to stay on one page.
+      Large sections can naturally flow across pages.
+    */
+    break-inside: auto;
+    page-break-inside: auto;
+}
+
+
+/* =====================================================
+   SECTION HEADINGS
+===================================================== */
+
 .section h2 {
-    color: #4c51bf;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
+    color: #1f3a5f;
+    font-size: 22px;
+    line-height: 1.3;
+    font-weight: 700;
+    margin: 0 0 24px 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #dbe4ee;
+
+    /*
+      Prevents a heading from being separated from
+      the content immediately following it.
+    */
+    break-after: avoid;
+    page-break-after: avoid;
 }
 
 .subsection {
-    margin-top: 20px;
+    margin-top: 24px;
+
+    /*
+      Keeps small subsections together when possible.
+      If a subsection is larger than a page, the browser
+      can still split it naturally instead of causing blanks.
+    */
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
 
 .subsection h3 {
-    color: #4a5568;
+    color: #344a66;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+
+    break-after: avoid;
+    page-break-after: avoid;
 }
 
+.subsection p {
+    margin: 0;
+}
+
+
+/* =====================================================
+   HIGHLIGHT / IMPORTANT INSIGHT BOXES
+===================================================== */
+
+.highlight {
+    background: linear-gradient(135deg, #f1f5fb 0%, #f7f9fc 100%);
+    border-left: 5px solid #3f6795;
+    padding: 19px 21px;
+    margin: 18px 0;
+    border-radius: 0 10px 10px 0;
+    color: #2c3d52;
+
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+.highlight strong {
+    display: block;
+    color: #23466e;
+    font-size: 14px;
+    margin-bottom: 7px;
+    font-weight: 700;
+}
+
+.highlight h3 {
+    color: #23466e;
+    margin: 0 0 8px 0;
+    font-size: 17px;
+}
+
+.highlight p {
+    margin: 0;
+}
+
+
+/* =====================================================
+   CARDS
+===================================================== */
+
 .card {
-    padding: 18px;
-    border-radius: 12px;
-    margin: 12px 0;
+    padding: 20px 22px;
+    border-radius: 11px;
+    margin: 16px 0;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+
+    /*
+      Each SWOT card stays together on a page whenever
+      there is enough space.
+    */
+    break-inside: avoid;
+    page-break-inside: avoid;
+}
+
+.card h3 {
+    margin: 0 0 10px 0;
+    font-size: 17px;
+
+    break-after: avoid;
+    page-break-after: avoid;
 }
 
 .card ul {
-    margin-top: 8px;
+    margin: 8px 0 0 0;
 }
 
 .strengths {
-    background: #d4edda;
+    background: #edf7f0;
+    border-left: 4px solid #4c9b6a;
+}
+
+.strengths h3 {
+    color: #276342;
 }
 
 .weaknesses {
-    background: #f8d7da;
+    background: #fdf0f1;
+    border-left: 4px solid #bf626c;
+}
+
+.weaknesses h3 {
+    color: #8d3740;
 }
 
 .opportunities {
-    background: #d1ecf1;
+    background: #edf5fb;
+    border-left: 4px solid #4e87b5;
+}
+
+.opportunities h3 {
+    color: #285d88;
 }
 
 .threats {
-    background: #fff3cd;
+    background: #fff8e7;
+    border-left: 4px solid #c49a42;
 }
+
+.threats h3 {
+    color: #80611e;
+}
+
+
+/* =====================================================
+   INFO CARD
+===================================================== */
 
 .info-card {
-    background: #edf2f7;
+    background: #f5f7fa;
     padding: 18px;
-    border-radius: 12px;
+    border-radius: 10px;
     margin: 12px 0;
+    border: 1px solid #e5e9ef;
+
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
 
-.highlight {
-    background: #eef2ff;
-    border-left: 5px solid #667eea;
-    padding: 18px;
-    margin: 15px 0;
-    border-radius: 8px;
-}
+
+/* =====================================================
+   SCORE
+===================================================== */
 
 .score {
-    font-size: 30px;
-    font-weight: bold;
-    color: #667eea;
+    display: inline-block;
+    font-size: 32px;
+    line-height: 1;
+    font-weight: 750;
+    color: #ffffff;
+    background: linear-gradient(135deg, #2d4e78, #5578a8);
+    padding: 14px 22px;
+    border-radius: 10px;
+    margin-top: 5px;
+    box-shadow: 0 5px 12px rgba(45, 78, 120, 0.15);
+
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
+
+
+/* =====================================================
+   TABLES
+===================================================== */
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 15px;
+    margin-top: 16px;
+    font-size: 13px;
+
+    break-inside: auto;
+    page-break-inside: auto;
+}
+
+thead {
+    display: table-header-group;
+}
+
+tfoot {
+    display: table-footer-group;
+}
+
+tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
 
 th {
-    background: #667eea;
+    background: #294a73;
     color: white;
-    padding: 12px;
+    padding: 12px 14px;
     text-align: left;
+    font-weight: 600;
 }
 
 td {
-    padding: 12px;
-    border-bottom: 1px solid #e2e8f0;
+    padding: 12px 14px;
+    border-bottom: 1px solid #e5e9ee;
+    vertical-align: top;
 }
 
+tr:nth-child(even) td {
+    background: #f8fafc;
+}
+
+
+/* =====================================================
+   LISTS & TEXT
+===================================================== */
+
 ul {
-    padding-left: 25px;
+    padding-left: 22px;
+    margin: 8px 0;
 }
 
 li {
-    margin-bottom: 6px;
+    margin-bottom: 7px;
+    padding-left: 2px;
+
+    /*
+      Prevents one list item itself from splitting
+      between two PDF pages.
+    */
+    break-inside: avoid;
+    page-break-inside: avoid;
 }
+
+p {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
 
 .footer {
-    margin-top: 40px;
-    padding: 20px;
+    margin-top: 36px;
+    padding: 22px;
     text-align: center;
-    color: #718096;
-    font-size: 13px;
+    color: #748195;
+    font-size: 12px;
+    line-height: 1.7;
+    border-top: 1px solid #dfe5ec;
 }
 
+
+/* =====================================================
+   MANUAL PAGE BREAK
+===================================================== */
+
 .page-break {
+    break-before: page;
     page-break-before: always;
+}
+
+
+/* =====================================================
+   PRINT / PDF OPTIMIZATION
+===================================================== */
+
+@media print {
+
+    html,
+    body {
+        background: #ffffff;
+    }
+
+    body {
+        font-size: 13px;
+        line-height: 1.55;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .cover {
+        box-shadow: none;
+        margin-bottom: 20px;
+    }
+
+    .section {
+        box-shadow: none;
+        margin-top: 18px;
+        padding: 24px 26px;
+
+        /*
+          Allows long report sections to continue naturally
+          to the next page without leaving large empty areas.
+        */
+        break-inside: auto;
+        page-break-inside: auto;
+    }
+
+    /*
+      Protect the actual visual components instead of
+      protecting the entire section.
+    */
+    .highlight,
+    .card,
+    .info-card,
+    .subsection {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .section h2,
+    .subsection h3,
+    .card h3,
+    .highlight h3 {
+        break-after: avoid;
+        page-break-after: avoid;
+    }
+
+    table {
+        break-inside: auto;
+        page-break-inside: auto;
+    }
+
+    tr {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    li {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
+
+    .footer {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
 }
 
 </style>
@@ -633,21 +943,10 @@ Comprehensive Startup Analysis
 
 </div>
 
-<div class="subsection">
-
-<h3>Overall Score</h3>
-
-<div class="score">
-
-{{ final_recommendation.overall_score }}
-
-</div>
-
-</div>
 
 <div class="subsection">
 
-<h3>Key Reasons</h3>
+<h3>Final Opinions</h3>
 
 <ul>
 
@@ -708,3 +1007,4 @@ Automated Startup Validation Report
 </body>
 
 </html>
+

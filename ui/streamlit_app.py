@@ -748,7 +748,7 @@ def render_landing() -> None:
     background:#FFF3CD;border:1.5px solid #F4B942;border-radius:100px;
     padding:8px 22px;font-size:14px;font-weight:700;color:#8B6914;
     margin-bottom:26px;letter-spacing:0.3px;font-family:Manrope,sans-serif;
-  ">🐝 AI-Powered Startup Validation</div>
+  "> AI-Powered Startup Validation</div>
 
   <h1 style="
     font-size:62px;font-weight:800;color:#202433;
@@ -767,7 +767,7 @@ def render_landing() -> None:
 """,
             unsafe_allow_html=True,
         )
-        if st.button("✨  Validate My Idea", key="hero_cta", use_container_width=True):
+        if st.button("Validate My Idea", key="hero_cta", use_container_width=True):
             go("input")
 
     with col_svg:
@@ -840,7 +840,7 @@ def render_input() -> None:
         with st.container(border=True):
 
             startup_val = st.text_area(
-                "💡 Your Startup Idea",
+                "Your Startup Idea",
                 placeholder="Describe your startup idea in a few sentences...",
                 height=160,
                 value=st.session_state.startup,
@@ -854,7 +854,7 @@ def render_input() -> None:
             )
 
             clicked = st.button(
-                "🍯  Start Validation",
+                "Start Validation",
                 key="start_validation",
                 use_container_width=True,
             )
@@ -1158,7 +1158,7 @@ def render_dashboard() -> None:
     # ── Unified AI Validation Report card ─────────────────────────────────────
     st.markdown(
         '<div class="report-card">'
-        '<div class="report-title">🍯 AI Validation Report</div>',
+        '<div class="report-title">AI Validation Report</div>',
         unsafe_allow_html=True,
     )
 
@@ -1193,10 +1193,10 @@ def render_dashboard() -> None:
 
     # ── Section 2: Market Analysis ─────────────────────────────────────────────
     market_summary = report.get("market_analysis", {})
-    _tss = _get_tam_sam_som()
+
     st.markdown('<div class="section-card market">', unsafe_allow_html=True)
     st.markdown('<div class="section-label market">📊 Market Analysis</div>', unsafe_allow_html=True)
-    _render_tam_sam_som_funnel(_tss["TAM"], _tss["SAM"], _tss["SOM"])
+    
     st.markdown("<div style='height:4px'></div>", unsafe_allow_html=True)
     if market_summary.get("market_opportunity"):
         st.markdown(
