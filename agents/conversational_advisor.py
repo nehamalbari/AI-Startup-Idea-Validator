@@ -105,6 +105,8 @@ def run_conversational_advisor(message, thread_id="default"):
     # Run the agent
     # --------------------------------------------------
 
+    print("DEBUG 1: About to invoke conversational agent")
+
     response = conversational_advisor.invoke(
         {
             "messages": messages,
@@ -116,6 +118,7 @@ def run_conversational_advisor(message, thread_id="default"):
         },
     )
 
+    print("DEBUG 2: Agent invocation completed")
     # --------------------------------------------------
     # Get latest assistant response
     # --------------------------------------------------

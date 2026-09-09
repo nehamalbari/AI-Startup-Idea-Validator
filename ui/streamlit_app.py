@@ -1516,6 +1516,8 @@ def render_chat_panel() -> None:
                     )
                     _ai_text = _extract_advisor_text(_resp)
                 except Exception as _e:
+                    import traceback
+                    traceback.print_exc()
                     _ai_text = f"Sorry, I encountered an issue. Please try again. ({_e})"
             st.session_state.chat_messages.append(
                 {"role": "ai", "text": _ai_text}
