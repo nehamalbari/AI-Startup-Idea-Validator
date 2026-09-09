@@ -645,64 +645,39 @@ def render_navbar(show_back: bool = False) -> None:
 # SHARED COMPONENT — BEE MASCOT (fixed, always visible)
 # ─────────────────────────────────────────────────────────────────────────────
 def render_bee_mascot() -> None:
+    """Render a fixed chat launcher that opens the Hive AI dialog."""
     st.markdown(
         """
 <style>
-.bee-mascot-wrap {
+.st-key-bee_mascot_btn {
     position: fixed;
     bottom: 28px;
     right: 28px;
     z-index: 9999;
     animation: beeBob 2.8s ease-in-out infinite;
-    cursor: default;
-    user-select: none;
 }
-.bee-mascot-body {
-    width: 58px;
-    height: 58px;
-    background: linear-gradient(145deg, #F4B942, #e8a832);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 28px;
-    box-shadow: 0 6px 24px rgba(244,185,66,0.55);
-    border: 3px solid rgba(255,255,255,0.85);
+.st-key-bee_mascot_btn button {
+    width: 58px !important;
+    height: 58px !important;
+    min-height: 58px !important;
+    padding: 0 !important;
+    background: linear-gradient(145deg, #F4B942, #e8a832) !important;
+    border: 3px solid rgba(255,255,255,0.85) !important;
+    border-radius: 50% !important;
+    font-size: 28px !important;
+    box-shadow: 0 6px 24px rgba(244,185,66,0.55) !important;
 }
-.bee-mascot-tooltip {
-    position: absolute;
-    bottom: 68px;
-    right: 0;
-    background: #202433;
-    color: white !important;
-    padding: 7px 14px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.22);
-    font-family: Manrope, sans-serif;
+.st-key-bee_mascot_btn button:hover {
+    transform: scale(1.08) !important;
 }
-.bee-mascot-tooltip::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    right: 16px;
-    border: 6px solid transparent;
-    border-top-color: #202433;
-}
-.bee-mascot-wrap:hover .bee-mascot-tooltip { opacity: 1; }
 </style>
-<div class="bee-mascot-wrap">
-    <div class="bee-mascot-body">🐝</div>
-    <div class="bee-mascot-tooltip">Need help? Ask Hive AI 🐝</div>
-</div>
 """,
         unsafe_allow_html=True,
     )
+    if st.button("🐝", key="bee_mascot_btn", help="Chat with Hive AI"):
+        st.session_state.chat_open = True
+        _init_chat()
+        st.rerun()
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1110,10 +1085,8 @@ def render_dashboard() -> None:
         with _b1:
             st.markdown('<div class="rect-btn-ask"></div>', unsafe_allow_html=True)
             if st.button("💬 Ask Hive AI", key="toggle_chat"):
-                st.session_state.chat_open = not st.session_state.chat_open
-                if st.session_state.chat_open:
-                    _init_chat()
-                st.rerun()
+                st.session_state.chat_open = True
+                _init_chat()
         with _b2:
             st.markdown('<div class="rect-btn-new"></div>', unsafe_allow_html=True)
             if st.button("+ New Idea", key="new_idea_btn"):
@@ -1459,10 +1432,6 @@ def render_dashboard() -> None:
             except Exception as _pdf_err:
                 st.warning(f"PDF generated but could not be opened: {_pdf_err}")
 
-    # ── Hive AI Chat Panel ────────────────────────────────────────────────────
-    if st.session_state.chat_open:
-        render_chat_panel()
-
     render_bee_mascot()
 
 
@@ -1555,6 +1524,20 @@ def render_chat_panel() -> None:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# HIVE AI DIALOG
+# ─────────────────────────────────────────────────────────────────────────────
+def render_chat_dialog() -> None:
+    """Open the existing advisor chat inside a Streamlit dialog."""
+    @st.dialog("Chat with Hive AI", width="large")
+    def _hive_chat_dialog() -> None:
+        render_chat_panel()
+        if st.button("Close chat", key="close_hive_chat"):
+            st.session_state.chat_open = False
+            st.rerun()
+
+    _hive_chat_dialog()
+
+# ─────────────────────────────────────────────────────────────────────────────
 # MAIN ROUTER
 # ─────────────────────────────────────────────────────────────────────────────
 _page = st.session_state.page
@@ -1567,3 +1550,7 @@ elif _page == "dashboard":
     render_dashboard()
 else:
     render_landing()
+
+# The dialog is available from every screen, including the floating bee launcher.
+if st.session_state.chat_open:
+    render_chat_dialog()
