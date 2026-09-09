@@ -14,8 +14,11 @@ def _database_is_configured() -> bool:
 
 
 def save_message(thread_id, role, content):
-    """Persist a message when PostgreSQL is configured."""
+    """Persist a message when PostgreSQL is configured.
 
+    The advisor remains usable without a database; those chats are simply kept
+    in the current application session instead of being persisted.
+    """
     if not _database_is_configured():
         return
 
@@ -34,7 +37,6 @@ def save_message(thread_id, role, content):
 
 def get_messages(thread_id):
     """Return persisted messages, or an empty history when no database is set."""
-
     if not _database_is_configured():
         return []
 
