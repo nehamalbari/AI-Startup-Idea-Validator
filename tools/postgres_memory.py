@@ -8,7 +8,20 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 
+def _database_is_configured() -> bool:
+    """Return whether persistent chat storage has been configured."""
+    return bool(DATABASE_URL)
+
+
 def save_message(thread_id, role, content):
+    """Persist a message when PostgreSQL is configured.
+
+    The advisor remains usable without a database; those chats are simply kept
+    in the current application session instead of being persisted.
+    """
+    if not _database_is_configured():
+        return
+
     with psycopg.connect(DATABASE_URL) as conn:
         with conn.cursor() as cur:
             cur.execute(
@@ -23,6 +36,10 @@ def save_message(thread_id, role, content):
 
 
 def get_messages(thread_id):
+    """Return persisted messages, or an empty history when no database is set."""
+    if not _database_is_configured():
+        return []
+
     with psycopg.connect(DATABASE_URL) as conn:
         with conn.cursor() as cur:
             cur.execute(
