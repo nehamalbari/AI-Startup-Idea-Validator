@@ -676,7 +676,6 @@ def render_bee_mascot() -> None:
     )
     if st.button("🐝", key="bee_mascot_btn", help="Chat with Hive AI"):
         st.session_state.chat_open = True
-        _init_chat()
         st.rerun()
 
 
@@ -965,32 +964,22 @@ def _extract_advisor_text(response) -> str:
 
 
 def _init_chat() -> None:
-    """Send startup context to the advisor and store its opening greeting."""
+    """Initialize the Hive AI chat with an instant welcome message."""
+
     if st.session_state.chat_initialized:
         return
-    report_json = (
-        json.dumps(st.session_state.report_result, indent=2)
-        if st.session_state.report_result
-        else "(analysis not yet available)"
+
+    greeting = (
+        "Hi! I'm Hive AI. 🐝 "
+        "I've finished analyzing your startup. "
+        "Ask me anything about the market, competitors, SWOT, MVP, "
+        "or go-to-market strategy!"
     )
-    init_msg = (
-        f"I've just received a startup analysis. Here's the context:\n\n"
-        f"Startup Idea: {st.session_state.startup}\n"
-        f"Domain: {st.session_state.domain}\n"
-        f"Location: {st.session_state.location}\n\n"
-        f"Analysis Report Summary:\n{report_json}\n\n"
-        f"Please briefly introduce yourself as Hive AI and confirm you're ready to help "
-        f"me explore these results. Keep it friendly and concise (2-3 sentences)."
-    )
-    try:
-        resp = run_conversational_advisor(init_msg, st.session_state.chat_thread_id)
-        greeting = _extract_advisor_text(resp)
-    except Exception:
-        greeting = (
-            "Hi! I'm Hive AI. 🐝 "
-            "I've finished analyzing your startup — what would you like to explore?"
-        )
-    st.session_state.chat_messages = [{"role": "ai", "text": greeting}]
+
+    st.session_state.chat_messages = [
+        {"role": "ai", "text": greeting}
+    ]
+
     st.session_state.chat_initialized = True
 
 
@@ -1086,7 +1075,7 @@ def render_dashboard() -> None:
             st.markdown('<div class="rect-btn-ask"></div>', unsafe_allow_html=True)
             if st.button("💬 Ask Hive AI", key="toggle_chat"):
                 st.session_state.chat_open = True
-                _init_chat()
+                
         with _b2:
             st.markdown('<div class="rect-btn-new"></div>', unsafe_allow_html=True)
             if st.button("+ New Idea", key="new_idea_btn"):
