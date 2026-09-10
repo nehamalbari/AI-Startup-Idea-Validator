@@ -613,6 +613,9 @@ def _extract_score(final: dict):
 # NAVIGATION HELPER
 # ─────────────────────────────────────────────────────────────────────────────
 def go(page: str) -> None:
+    # Navigation must always close the Hive AI dialog so a previous
+    # chat session cannot appear when moving to another page.
+    st.session_state.chat_open = False
     st.session_state.page = page
     st.rerun()
 
@@ -1075,6 +1078,7 @@ def render_dashboard() -> None:
             st.markdown('<div class="rect-btn-ask"></div>', unsafe_allow_html=True)
             if st.button("💬 Ask Hive AI", key="toggle_chat"):
                 st.session_state.chat_open = True
+                st.rerun()
                 
         with _b2:
             st.markdown('<div class="rect-btn-new"></div>', unsafe_allow_html=True)
